@@ -19,8 +19,10 @@ print("x_test", X_test)
 print("y_test", y_test)
 
 # Step 3: Create and train the SGDClassifier
-# sgd_clf = SGDClassifier()
+sgd_clf = SGDClassifier()
 # sgd_clf.fit(X_train, y_train)
+
+print("sgd_clf", sgd_clf)
 
 # # Step 4: Make predictions
 # y_pred = sgd_clf.predict(X_test)
