@@ -78,6 +78,27 @@ cursor.close()
 connection.close()
 
 
+
+# now reopen the connection and get features and labels for testing data
+# create connection
+connection = sql.connect('test.db')
+cursor = connection.cursor()
+
+execute = f"SELECT {SQL_select} FROM test_1 LIMIT 100000;"
+cursor.execute(execute)
+
+result_features = cursor.fetchall()
+
+features_test = np.array(result_features)
+
+execute = f"SELECT Flag FROM train_1 LIMIT 100000;"
+cursor.execute(execute)
+
+result_label = cursor.fetchall()
+
+labels_test = np.array(result_label)
+
+
 # now   let's get into actually messing with the data and SGD
 
 # split the data into training and testing data
@@ -109,13 +130,13 @@ clf = SGDClassifier() # running it raw with default parameters
 clf.fit(features_train, labels_train.ravel()) # .ravel() is to get rid of a warning, it's not important
 
 # make predictions
-# y_pred = clf.predict(X_test)
+labels_pred = clf.predict(features_test)
 
 # print(y_pred)
 
 # # get accuracy
-# accuracy = clf.score(y_test, y_pred)
+accuracy = clf.score(labels_test, labels_pred)
 # #print the accuracy
-# print(accuracy)
+print(accuracy)
 
 # we should have trained data by now?
