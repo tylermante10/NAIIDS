@@ -2,9 +2,14 @@
 import pandas as pd
 from sklearn.linear_model import SGDClassifier
 import sqlite3 as sql
-
+# HERE: FLIP THE COMMENTS
 # change this to your LOCAL path to the CSV file. that way you use what's in the google drive @mike 
-excel_file = './UNSW-NB15_Labelled_Set_2.xlsx'
+# excel_file = './UNSW-NB15_Labelled_Set_2.xlsx'
+excel_file = '/mnt/c/Users/mante/Downloads/UNSW-NB15_Labelled_Set_2.xlsx'
+
+
+
+# read the excel file
 data = pd.read_excel(excel_file)
 
 # connect to sql lite databse 

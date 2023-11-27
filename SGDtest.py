@@ -11,8 +11,9 @@ import numpy as np
 
 # copy code from ArrayTest.py
 
-# create connection
-connection = sql.connect('training.db')
+# create connection - FLIP COMMENTS
+# connection = sql.connect('training.db')
+connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
 
 # create cursor
 cursor = connection.cursor()
@@ -37,7 +38,7 @@ included_columns = ['Src_ip_A', 'Src_ip_B', 'Src_ip_C', 'Src_ip_D', 'Source_Port
 SQL_select = ', '.join(included_columns)
 
 # seems to be some edge case where it gets rows that are filled with None? so have it not include those
-execute = f"SELECT {SQL_select} FROM train_1;"
+execute = f"SELECT {SQL_select} FROM test_1;"
 cursor.execute(execute)
 
 # get the result of that execute. this will be the 2D array with every column except flag
@@ -46,7 +47,7 @@ result_features = cursor.fetchall()
 # let's repeat but for a one dimensional array
 # we want the flag column (or label, we can easily switch it out)
 # create execute string
-execute = f"SELECT Flag FROM train_1;"
+execute = f"SELECT Flag FROM test_1;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
