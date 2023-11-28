@@ -13,7 +13,9 @@ import gc
 # copy code from ArrayTest.py
 
 # create connection
-connection = sql.connect('train.db')
+# connection = sql.connect('train.db')
+connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
+
 
 # create cursor
 cursor = connection.cursor()
