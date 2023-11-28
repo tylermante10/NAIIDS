@@ -40,28 +40,25 @@ included_columns = ['Src_ip_A', 'Src_ip_B', 'Src_ip_C', 'Src_ip_D', 'Source_Port
 SQL_select = ', '.join(included_columns)
 
 # seems to be some edge case where it gets rows that are filled with None? so have it not include those
-execute = f"SELECT {SQL_select} FROM train_1 LIMIT 100000;"
+execute = f"SELECT {SQL_select} FROM train_1;"
 cursor.execute(execute)
 
 
 # get the result of that execute. this will be the 2D array with every column except flag
 result_features = cursor.fetchall()
 
-print("47")
+print("Features selection success")
 # let's repeat but for a one dimensional array
 # we want the flag column (or label, we can easily switch it out)
 # create execute string
-execute = f"SELECT Flag FROM train_1 LIMIT 100000;"
+execute = f"SELECT Flag FROM train_1;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
 
-print("56")
+print("Training label selection success")
 # we can convert the result to a array
 # this array is a 2D array if sample number and feature, on sprint planning this is 3.d.i
-
-gc.collect()
-
 
 features_train = np.array(result_features, dtype='float32')
 
@@ -70,7 +67,7 @@ labels_train = np.array(result_label, dtype='float32')
 
 labels_train = labels_train.flatten()
 
-print("65")
+print("Features and labels successfully converted to numpy arrays")
 # print("Below is y array. 2D array of samples and features")
 # print(features)
 # print("Below is x array. 1D array of labels")
@@ -88,14 +85,14 @@ connection.close()
 connection = sql.connect('/mnt/c/Users/mante/Downloads/test.db')
 cursor = connection.cursor()
 
-execute = f"SELECT {SQL_select} FROM test_1 LIMIT 100000;"
+execute = f"SELECT {SQL_select} FROM test_1;"
 cursor.execute(execute)
 
 result_features = cursor.fetchall()
 
 features_test = np.array(result_features, dtype='float32')
 
-execute = f"SELECT Flag FROM test_1 LIMIT 100000;"
+execute = f"SELECT Flag FROM test_1;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
@@ -132,23 +129,21 @@ clf = SGDClassifier() # running it raw with default parameters
 
 # train the data
 
-clf.fit(features_train, labels_train.ravel()) # .ravel() is to get rid of a warning, it's not important
+clf.fit(features_train, labels_train.ravel()) 
 
-print(features_train.dtype)
-print(features_test.dtype)
+# Debug statements
+# print(features_train.dtype)
+# print(features_test.dtype)
 
 print("\n")
 # make predictions
 labels_pred = clf.predict(features_test)
 
-print(labels_pred.shape)
-print(labels_test.shape)
-
-
+# Debug statements
+# print(labels_pred.shape)
+# print(labels_test.shape)
 
 # # get accuracy
 accuracy = clf.score(features_test, labels_test)
-# #print the accuracy
+# # print the accuracy
 print(accuracy)
-
-# we should have trained data by now?
