@@ -62,10 +62,10 @@ print("56")
 gc.collect()
 
 
-features_train = np.array(result_features)
+features_train = np.array(result_features, dtype=np.float32)
 
 # this array is a 1d array of labels, on sprint planning this is 3.d.ii
-labels_train = np.array(result_label)
+labels_train = np.array(result_label, dtype=np.float32)
 
 
 print("65")
@@ -82,7 +82,8 @@ connection.close()
 
 # now reopen the connection and get features and labels for testing data
 # create connection
-connection = sql.connect('test.db')
+# connection = sql.connect('test.db')
+connection = sql.connect('/mnt/c/Users/mante/Downloads/test.db')
 cursor = connection.cursor()
 
 execute = f"SELECT {SQL_select} FROM test_1 LIMIT 100000;"
@@ -90,14 +91,14 @@ cursor.execute(execute)
 
 result_features = cursor.fetchall()
 
-features_test = np.array(result_features)
+features_test = np.array(result_features, dtype=np.float32)
 
-execute = f"SELECT Flag FROM train_1 LIMIT 100000;"
+execute = f"SELECT Flag FROM test_1 LIMIT 100000;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
 
-labels_test = np.array(result_label)
+labels_test = np.array(result_label, dtype=np.float32)
 
 
 # now   let's get into actually messing with the data and SGD
