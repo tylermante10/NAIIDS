@@ -12,9 +12,8 @@ import gc
 
 # copy code from ArrayTest.py
 
-# create connection - FLIP COMMENTS
-# connection = sql.connect('train.db')
-connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
+# create connection
+connection = sql.connect('train.db')
 
 # create cursor
 cursor = connection.cursor()
@@ -62,11 +61,12 @@ print("56")
 gc.collect()
 
 
-features_train = np.array(result_features)
+features_train = np.array(result_features, dtype='float32')
 
 # this array is a 1d array of labels, on sprint planning this is 3.d.ii
-labels_train = np.array(result_label)
+labels_train = np.array(result_label, dtype='float32')
 
+labels_train = labels_train.flatten()
 
 print("65")
 # print("Below is y array. 2D array of samples and features")
@@ -90,16 +90,17 @@ cursor.execute(execute)
 
 result_features = cursor.fetchall()
 
-features_test = np.array(result_features)
+features_test = np.array(result_features, dtype='float32')
 
-execute = f"SELECT Flag FROM train_1 LIMIT 100000;"
+execute = f"SELECT Flag FROM test_1 LIMIT 100000;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
 
-labels_test = np.array(result_label)
 
+labels_test = np.array(result_label, dtype='float32')
 
+labels_test = labels_test.flatten()
 # now   let's get into actually messing with the data and SGD
 
 # split the data into training and testing data
@@ -130,13 +131,20 @@ clf = SGDClassifier() # running it raw with default parameters
 
 clf.fit(features_train, labels_train.ravel()) # .ravel() is to get rid of a warning, it's not important
 
+print(features_train.dtype)
+print(features_test.dtype)
+
+print("\n")
 # make predictions
 labels_pred = clf.predict(features_test)
 
-# print(y_pred)
+print(labels_pred.shape)
+print(labels_test.shape)
+
+
 
 # # get accuracy
-accuracy = clf.score(labels_test, labels_pred)
+accuracy = clf.score(features_test, labels_test)
 # #print the accuracy
 print(accuracy)
 
