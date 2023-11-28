@@ -145,5 +145,6 @@ labels_pred = clf.predict(features_test)
 
 # # get accuracy
 accuracy = clf.score(features_test, labels_test)
+accuracy_pct = round((accuracy * 100), 4)
 # # print the accuracy
-print(accuracy)
+print(f"Predicted malicious packets with {accuracy_pct}% accuracy")
