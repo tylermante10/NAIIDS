@@ -1,8 +1,9 @@
 # Network Artificial Intellegent Intrusion Detection System
-I. Replace 
-Visit the link below to access the data we used.
+## Preliminary Setup
+1. Visit the link below to access the data we used.
 https://drive.google.com/drive/folders/1udtPVs8erYtohOUlHz4FZSUTy5HGXo_E?usp=sharing and download the files test.db and train.db (the excel sheets just split up the data differently - pre-processing)
-Replace line 17 with this string: "connection = sql.connect(/path/to/downloaded/files)"
+2. Replace line 17 with this string: "connection = sql.connect(/path/to/downloaded/files)"
+3. Have a linux environment with python installed
 ## e.g. connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
 How to test on your local computer:
 
