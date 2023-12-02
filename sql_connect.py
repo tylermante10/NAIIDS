@@ -19,7 +19,7 @@ connection = sql.connect('test.db')
 cusor = connection.cursor()
 
 # Convert the data frame to sql table
-data.to_sql('test_1', connection, if_exists='replace', index=False)
+data.to_sql('3rd-set', connection, if_exists='replace', index=False)
 
 # read the sql table
 data = pd.read_sql('SELECT * FROM test_1', connection)

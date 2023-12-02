@@ -146,5 +146,12 @@ labels_pred = clf.predict(features_test)
 # # get accuracy
 accuracy = clf.score(features_test, labels_test)
 accuracy_pct = round((accuracy * 100), 4)
+
+# false positive rate
+# print("False positive rate: ", end="")
+# run 10 epochs ??
+# for i in range(10):
+#     clf.partial_fit(features_train, labels_train, classes=np.unique(labels_train))
+
 # # print the accuracy
 print(f"Predicted malicious packets with {accuracy_pct}% accuracy")
