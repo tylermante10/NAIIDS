@@ -146,6 +146,9 @@ labels_pred = clf.predict(features_test)
 # # get accuracy
 accuracy = clf.score(features_test, labels_test)
 accuracy_pct = round((accuracy * 100), 4)
+# # get histogram of predictions
+print("Histogram of predictions: ")
+print(np.histogram(labels_pred))
 
 # false positive rate
 # print("False positive rate: ", end="")
