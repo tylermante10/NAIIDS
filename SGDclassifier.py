@@ -1,7 +1,7 @@
 # testing an SGD classifier
 # author @tyler @mike
 
-# do the imports
+# import libraries
 import pandas as pd
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
@@ -9,13 +9,11 @@ from sklearn.metrics import confusion_matrix
 import sqlite3 as sql
 import numpy as np
 import gc
-
-# copy code from ArrayTest.py
+# Training
 
 # create connection
 # connection = sql.connect('train.db')
-connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
-
+connection = sql.connect('/mnt/c/Users/mante/Downloads/all_dbs.db')
 
 # create cursor
 cursor = connection.cursor()
@@ -73,7 +71,7 @@ print("Features and labels successfully converted to numpy arrays")
 cursor.close()
 connection.close()
 
-
+# TESTING
 
 # now reopen the connection and get features and labels for testing data
 # create connection
