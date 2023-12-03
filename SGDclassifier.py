@@ -13,7 +13,7 @@ import gc
 
 # create connection
 # connection = sql.connect('train.db')
-connection = sql.connect('/mnt/c/Users/mante/Downloads/all_dbs.db')
+connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
 
 # create cursor
 cursor = connection.cursor()
