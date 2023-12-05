@@ -99,6 +99,33 @@ labels_test = np.array(result_label, dtype='float32')
 
 labels_test = labels_test.flatten()
 
+## INSERTED HERE
+# Combined training and testing features for variance thresholding
+combined_features = np.vstack((features_train, features_test))
+
+# Apply Variance Thresholding to select features
+threshold = 0.1  # Define the threshold here?
+selector = VarianceThreshold(threshold=threshold)
+selected_features = selector.fit_transform(combined_features)
+print(selected_features.shape)
+
+# Get the indices of the selected features
+selected_indices = selector.get_support(indices=True)
+for i in selected_indices:
+    print(i)
+
+# Apply the selected features to your data - EDIT HERE TO CHOOSE the correct indices
+selected_features_train = selected_features[:len(features_train)]
+selected_features_test = selected_features[len(features_train):]
+
+# # Apply the selected features to your data
+
+# selected_features_pred = selector.transform(labels_pred)
+
+# Train your model using the selected features
+# Replace this with your model training code using 'selected_features_train' and 'labels_train'
+
+
 # learn machine
 clf = SGDClassifier(shuffle = False, max_iter = 1000000) # adjusting shuffle parameter
 
