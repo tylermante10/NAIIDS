@@ -31,7 +31,6 @@ included_columns = ['Src_ip_A', 'Src_ip_B', 'Src_ip_C', 'Src_ip_D', 'Source_Port
                     'Synack_time', 'Ack_time', 'Is_sm_ips_ports', 'Ct_state_ttl', 'Ct_http_f', 'login_ftp', 'Ct_ftp_cmd',
                     'Ct_srv_src', 'Ct_srv_dest', 'Ct_dest_ltm', 'Ct_str_ltm', 'Ct_src_dport_ltm', 'Ct_dest_sport_ltm',
                     'Ct_dest_src_ltm', 'Dest_ip_A', 'Dest_ip_B', 'Dest_ip_C', 'Dest_ip_D', 'Dest_Port']
-
 # Combine column names into a single string
 SQL_select = ', '.join(included_columns)
 
@@ -48,24 +47,17 @@ print("Features selection success")
 # create execute string
 execute = f"SELECT Flag FROM train_1;"
 cursor.execute(execute)
-
 result_label = cursor.fetchall()
-
 print("Training label selection success")
+
 # Convert results to arrays
 # this array is a 2D array if sample number and feature, on sprint planning this is 3.d.i
 features_train = np.array(result_features, dtype='float32')
-
 # this array is a 1d array of labels, on sprint planning this is 3.d.ii
 labels_train = np.array(result_label, dtype='float32')
-
+# flatten to 1D array
 labels_train = labels_train.flatten()
-
 print("Features and labels successfully converted to numpy arrays")
-# print("Below is y array. 2D array of samples and features")
-# print(features)
-# print("Below is x array. 1D array of labels")
-# print(labels)
 
 # close connection and cursor
 cursor.close()
@@ -79,22 +71,18 @@ connection.close()
 connection = sql.connect('/mnt/c/Users/mante/Downloads/test.db')
 cursor = connection.cursor()
 
+# Same included columns for testing
 execute = f"SELECT {SQL_select} FROM test_1;"
 cursor.execute(execute)
-
 result_features = cursor.fetchall()
-
 features_test = np.array(result_features, dtype='float32')
 
-
+# Only flag for testing prediction
 execute = f"SELECT Flag FROM test_1;"
 cursor.execute(execute)
-
 result_label = cursor.fetchall()
-
-
 labels_test = np.array(result_label, dtype='float32')
-
+# Flatten to 1D
 labels_test = labels_test.flatten()
 
 # learn machine
@@ -103,10 +91,13 @@ clf = SGDClassifier(shuffle = False) # adjusting shuffle parameter
 # print(features_train[0,:])
 # print(labels_train)
 
-
 # Train the data
 print("Training...")
-clf.fit(features_train, labels_train.ravel()) 
+# clf.fit(features_train, labels_train.ravel()) 
+for i in range(10):
+    clf.partial_fit(features_train, labels_train, classes=np.unique(labels_train))
+    print(f"Epoch {i+1} complete")
+
 print("Training success")
 
 # Debug statements
@@ -129,7 +120,7 @@ print(cr)
 clf_roc = RocCurveDisplay.from_estimator(clf, features_test, labels_test)
 clf_roc.plot()
 clf_roc.figure_.suptitle("ROC curve comparison")
-# clf_roc.figure_.subplots_adjust(left=0.15, right=0.7)
+clf_roc.figure_.subplots_adjust(left=0.15, right=0.7)
 clf_roc.figure_.set_size_inches(8, 6)
 clf_roc.ax_.set_xlabel("False Positive Rate")
 clf_roc.ax_.set_ylabel("True Positive Rate")
@@ -137,7 +128,6 @@ clf_roc.ax_.legend(loc="lower right")
 clf_roc.figure_.savefig("ROC_curve_comparison.png")
 print("ROC curve saved to ROC_curve_comparison.png")
 
-# # DEBUG labels_pred
 
 # Debug statements
 # print(labels_pred.shape)
@@ -151,12 +141,6 @@ accuracy_pct = round((accuracy * 100), 4)
 # np.histogram(labels_pred)
 # # View the histogram
 # plt.show()
-
-# false positive rate
-# print("False positive rate: ", end="")
-# run 10 epochs ??
-# for i in range(10):
-#     clf.partial_fit(features_train, labels_train, classes=np.unique(labels_train))
 
 # # print the accuracy
 print(f"Predicted malicious packets with {accuracy_pct}% accuracy")
