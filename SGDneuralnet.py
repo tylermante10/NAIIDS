@@ -2,11 +2,14 @@
 # author @tyler @mike
 
 # import libraries
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
 import pandas as pd
+from numpy import loadtxt
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
-from sklearn.feature_selection import VarianceThreshold
-from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import RocCurveDisplay
 from sklearn.metrics import confusion_matrix
@@ -99,34 +102,8 @@ labels_test = np.array(result_label, dtype='float32')
 
 labels_test = labels_test.flatten()
 
-## INSERTED HERE
-# Combine your training and testing features for variance thresholding
-combined_features = np.vstack((features_train, features_test))
-
-# Apply Variance Thresholding to select features
-threshold = 0.1  # Define the threshold here?
-selector = VarianceThreshold(threshold=threshold)
-selected_features = selector.fit_transform(combined_features)
-
-# Get the indices of the selected features
-selected_indices = selector.get_support(indices=True)
-for i in selected_indices:
-    print(i)
-
-# Apply the selected features to your data - EDIT HERE TO CHOOSE the correct indices
-selected_features_train = selected_features[:len(features_train)]
-selected_features_test = selected_features[len(features_train):]
-
-# # Apply the selected features to your data
-
-# selected_features_pred = selector.transform(labels_pred)
-
-# Train your model using the selected features
-# Replace this with your model training code using 'selected_features_train' and 'labels_train'
-
-
 # learn machine
-clf = SGDClassifier(shuffle = False, max_iter = 1000000) # adjusting shuffle parameter
+clf = SGDClassifier(shuffle = False) # adjusting shuffle parameter
 
 # print(features_train[0,:])
 # print(labels_train)
@@ -188,4 +165,86 @@ accuracy_pct = round((accuracy * 100), 4)
 
 # # print the accuracy
 print(f"Predicted malicious packets with {accuracy_pct}% accuracy")
+
+# Assuming 'extracted_features' is the feature vector obtained from the SGD classifier
+
+# Define a pyTorch neural net
+# Convert NumPy arrays to PyTorch tensors
+extracted_features_tensor = torch.tensor(labels_pred)
+x_train_tensor = torch.tensor(labels_train)
+# x_val_tensor = torch.tensor(x_val)
+y_train_tensor = torch.tensor(features_train)
+# y_val_tensor = torch.tensor(y_val)
+
+# Create PyTorch DataLoader for training and validation sets
+train_dataset = TensorDataset(extracted_features_tensor, y_train_tensor)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+# val_dataset = TensorDataset(x_val_tensor, y_val_tensor)
+# val_loader = DataLoader(val_dataset, batch_size=32)
+
+# Define a neural network using PyTorch
+class NeuralNetwork(nn.Module):
+    def __init__(self, input_size, num_classes):
+        super(NeuralNetwork, self).__init__()
+        self.fc1 = nn.Linear(input_size, 128)
+        self.dropout1 = nn.Dropout(0.5)
+        self.fc2 = nn.Linear(128, 64)
+        self.dropout2 = nn.Dropout(0.3)
+        self.fc3 = nn.Linear(64, num_classes)
+    
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.dropout1(x)
+        x = torch.relu(self.fc2(x))
+        x = self.dropout2(x)
+        x = self.fc3(x)
+        return x
+
+# Initialize the model
+input_size = labels_pred.shape[0]  # Adjust this according to the feature size
+num_classes = 1  # number of output classes (just binary classifier)
+model = NeuralNetwork(input_size, num_classes)
+
+# Define loss function and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Training loop
+num_epochs = 10
+for epoch in range(num_epochs):
+    model.train()
+    running_loss = 0.0
+    for inputs, labels in train_loader:
+        optimizer.zero_grad()
+        outputs = model(inputs.float())  # Forward pass
+        loss = criterion(outputs, labels)
+        loss.backward()  # Backward pass
+        optimizer.step()  # Update weights
+        running_loss += loss.item() * inputs.size(0)
+    
+    # Calculate average loss for each epoch
+    epoch_loss = running_loss / len(train_loader.dataset)
+    
+    # Validation
+    model.eval()
+    val_loss = 0.0
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for inputs, labels in val_loader:
+            outputs = model(inputs.float())
+            loss = criterion(outputs, labels)
+            val_loss += loss.item() * inputs.size(0)
+            _, predicted = torch.max(outputs, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+    
+    # Calculate average validation loss and accuracy for each epoch
+    val_epoch_loss = val_loss / len(val_loader.dataset)
+    val_accuracy = correct / total
+    
+    print(f"Epoch [{epoch+1}/{num_epochs}] - Loss: {epoch_loss:.4f} - Val Loss: {val_epoch_loss:.4f} - Val Acc: {val_accuracy:.4f}")
+
+
+
 
