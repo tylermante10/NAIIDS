@@ -9,9 +9,9 @@ from sklearn.metrics import confusion_matrix
 import sqlite3 as sql
 import numpy as np
 import gc
-# Training
+# Training Section:
 
-# create connection
+# create connection to training database. Adjust path as needed
 # connection = sql.connect('train.db')
 connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
 
@@ -33,15 +33,15 @@ included_columns = ['Src_ip_A', 'Src_ip_B', 'Src_ip_C', 'Src_ip_D', 'Source_Port
 # Combine column names into a single string
 SQL_select = ', '.join(included_columns)
 
-# seems to be some edge case where it gets rows that are filled with None? so have it not include those
+# Querying the training database with columns for features
 execute = f"SELECT {SQL_select} FROM train_1;"
 cursor.execute(execute)
 
-
+print("About to execute fetchall")
 # get the result of that execute. this will be the 2D array with every column except flag
 result_features = cursor.fetchall()
-
 print("Features selection success")
+
 # let's repeat but for a one dimensional array
 # we want the flag column (or label, we can easily switch it out)
 # create execute string
@@ -51,9 +51,8 @@ cursor.execute(execute)
 result_label = cursor.fetchall()
 
 print("Training label selection success")
-# we can convert the result to a array
+# Convert results to arrays
 # this array is a 2D array if sample number and feature, on sprint planning this is 3.d.i
-
 features_train = np.array(result_features, dtype='float32')
 
 # this array is a 1d array of labels, on sprint planning this is 3.d.ii
@@ -86,6 +85,7 @@ result_features = cursor.fetchall()
 
 features_test = np.array(result_features, dtype='float32')
 
+
 execute = f"SELECT Flag FROM test_1;"
 cursor.execute(execute)
 
@@ -95,12 +95,6 @@ result_label = cursor.fetchall()
 labels_test = np.array(result_label, dtype='float32')
 
 labels_test = labels_test.flatten()
-# now   let's get into actually messing with the data and SGD
-
-# split the data into training and testing data
-# test_size = 0.5, means 50/50 test and train
-# we do NOT want to use random_state, or shuffle, because we want to keep the order of the data
-# X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.5)
 
 # learn machine
 clf = SGDClassifier() # running it raw with default parameters
@@ -109,21 +103,10 @@ clf = SGDClassifier() # running it raw with default parameters
 # print(labels_train)
 
 
-# Assuming features_train is your NumPy array
-
-# # Check for NaN values in the NumPy array
-# nan_mask = np.isnan(features_train.astype(float))
-
-# # Sum the NaN values along each column
-# nan_sum_per_column = np.sum(nan_mask, axis=0)
-
-# # Print the count of NaN values for each column
-# print("Number of NaN values per column:")
-# print(nan_sum_per_column)
-
-# train the data
-
+# Train the data
+print("Training...")
 clf.fit(features_train, labels_train.ravel()) 
+print("Training success")
 
 # Debug statements
 # print(features_train.dtype)
@@ -132,6 +115,16 @@ clf.fit(features_train, labels_train.ravel())
 print("\n")
 # make predictions
 labels_pred = clf.predict(features_test)
+# # DEBUG labels_pred
+# # Check for NaN values in the NumPy array
+# nan_mask = np.isnan(labels_pred.astype(float))
+
+# # Sum the NaN values along each column
+# nan_sum_per_column = np.sum(nan_mask, axis=0)
+
+# # Print the count of NaN values for each column
+# print("Number of NaN values per column in Labels:")
+# print(nan_sum_per_column)
 
 # Debug statements
 # print(labels_pred.shape)
@@ -140,9 +133,11 @@ labels_pred = clf.predict(features_test)
 # # get accuracy
 accuracy = clf.score(features_test, labels_test)
 accuracy_pct = round((accuracy * 100), 4)
-# # get histogram of predictions
-print("Histogram of predictions: ")
-print(np.histogram(labels_pred))
+# # # get histogram of predictions
+# print("Histogram of predictions: ")
+# np.histogram(labels_pred)
+# # View the histogram
+# plt.show()
 
 # false positive rate
 # print("False positive rate: ", end="")
