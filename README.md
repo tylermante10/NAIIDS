@@ -1,9 +1,11 @@
 # Network Artificial Intellegent Intrusion Detection System
 ## Directory contents:
-* SGDtest.py to run machine learn expressions
+* SGDClassifier.py to run machine learn expressions
+* Test-files: Working directory (unimportant files)
 ## Preliminary Setup
 1. Visit the link below to access the data we used.
-https://drive.google.com/drive/folders/1udtPVs8erYtohOUlHz4FZSUTy5HGXo_E?usp=sharing and download the files test.db and train.db (the excel sheets just split up the data differently - pre-processing)
+* https://drive.google.com/drive/folders/1tukyzG5DkGZkwaXoiwhvTo0b01WOofoN?usp=drive_link
+* Download the above files test.db and train.db 
 2. Replace line 17 with this string: "connection = sql.connect(/path/to/downloaded/files)"
    ### a. e.g. connection = sql.connect('/mnt/c/...')
 4. Have a linux environment with python installed
