@@ -15,7 +15,8 @@ import numpy as np
 import gc
 ### Training Section:
 
-# create connection to training database. Adjust path below: 
+# create connection to training database. 
+# TODO Adjust path below: 
 # connection = sql.connect('train.db')
 connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
 
@@ -66,8 +67,8 @@ cursor.close()
 connection.close()
 
 ### Testing Section
-# now reopen the connection and get features and labels for testing data
-# connection = sql.connect('test.db')
+# now reopen the connection and get features and labels for testing data 
+# TODO: Adjust path below
 connection = sql.connect('/mnt/c/Users/mante/Downloads/test.db')
 cursor = connection.cursor()
 

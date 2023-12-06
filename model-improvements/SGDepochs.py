@@ -11,10 +11,11 @@ from sklearn.metrics import confusion_matrix
 import sqlite3 as sql
 import numpy as np
 import gc
-# Training Section:
+## Training Section:
 
 # create connection to training database. Adjust path as needed
 # connection = sql.connect('train.db')
+# TODO: Adjust file path below
 connection = sql.connect('/mnt/c/Users/mante/Downloads/train.db')
 
 # create cursor
@@ -63,11 +64,11 @@ print("Features and labels successfully converted to numpy arrays")
 cursor.close()
 connection.close()
 
-# TESTING
+## TESTING Section
 
 # now reopen the connection and get features and labels for testing data
 # create connection
-# connection = sql.connect('test.db')
+# TODO: Adjust file path below
 connection = sql.connect('/mnt/c/Users/mante/Downloads/test.db')
 cursor = connection.cursor()
 
@@ -86,23 +87,14 @@ labels_test = np.array(result_label, dtype='float32')
 labels_test = labels_test.flatten()
 
 # learn machine
-clf = SGDClassifier(shuffle = False) # adjusting shuffle parameter
-
-# print(features_train[0,:])
-# print(labels_train)
+clf = SGDClassifier(shuffle = False) # adjusting shuffle parameter to preserve order
 
 # Train the data
 print("Training...")
-# clf.fit(features_train, labels_train.ravel()) 
 for i in range(10):
     clf.partial_fit(features_train, labels_train, classes=np.unique(labels_train))
     print(f"Epoch {i+1} complete")
-
 print("Training success")
-
-# Debug statements
-# print(features_train.dtype)
-# print(features_test.dtype)
 
 print("\n")
 # make predictions
@@ -128,19 +120,9 @@ clf_roc.ax_.legend(loc="lower right")
 clf_roc.figure_.savefig("ROC_curve_comparison.png")
 print("ROC curve saved to ROC_curve_comparison.png")
 
-
-# Debug statements
-# print(labels_pred.shape)
-# print(labels_test.shape)
-
-# # get accuracy
+## Report accuracy
 accuracy = clf.score(features_test, labels_test)
 accuracy_pct = round((accuracy * 100), 4)
-# # # get histogram of predictions
-# print("Histogram of predictions: ")
-# np.histogram(labels_pred)
-# # View the histogram
-# plt.show()
 
-# # print the accuracy
+# print the accuracy
 print(f"Predicted malicious packets with {accuracy_pct}% accuracy")
