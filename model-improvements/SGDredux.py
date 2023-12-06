@@ -3,6 +3,7 @@
 
 # import libraries
 import pandas as pd
+from mlxtend.feature_selection import ExhaustiveFeatureSelector as EFS
 from sklearn.feature_selection import mutual_info_classif
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
@@ -34,12 +35,20 @@ included_columns = ['Src_ip_A', 'Src_ip_B', 'Src_ip_C', 'Src_ip_D', 'Source_Port
                     'Synack_time', 'Ack_time', 'Is_sm_ips_ports', 'Ct_state_ttl', 'Ct_http_f', 'login_ftp', 'Ct_ftp_cmd',
                     'Ct_srv_src', 'Ct_srv_dest', 'Ct_dest_ltm', 'Ct_str_ltm', 'Ct_src_dport_ltm', 'Ct_dest_sport_ltm',
                     'Ct_dest_src_ltm', 'Dest_ip_A', 'Dest_ip_B', 'Dest_ip_C', 'Dest_ip_D', 'Dest_Port']
+# included_columns = ['Src_ip_D', 'Source_Port', 'Protocol_feature',
+#                     'State_feature', 'Row_dur', 'src_bytes', 'dest_bytes', 'Src_ttl', 'Dest_ttl', 'Src_loss', 'Dest_loss',
+#                     'Src_bps', 'Dest_bps', 'Src_pkt_ct', 'Dst_pkt_ct', 
+#                     'Src_mean_pkt_size', 'Dst_mean_pkt_size',
+#                     'Src_jitter', 'Dest_jitter', '"Start Time"', '"Last Time"', 'Src_arr_time', 'Dest_arr_time', 'Tcp_rtt',
+#                     'Synack_time', 'Ack_time', 'Ct_state_ttl',
+#                     'Ct_srv_src', 'Ct_srv_dest', 'Ct_dest_ltm', 'Ct_str_ltm', 'Ct_src_dport_ltm', 'Ct_dest_sport_ltm',
+#                     'Ct_dest_src_ltm', 'Dest_ip_A', 'Dest_ip_B', 'Dest_ip_C', 'Dest_ip_D', 'Dest_Port']
 
 # Combine column names into a single string
 SQL_select = ', '.join(included_columns)
 
 # Querying the training database with columns for features
-execute = f"SELECT {SQL_select} FROM train_1 Limit 100000;"
+execute = f"SELECT {SQL_select} FROM train_1;"
 cursor.execute(execute)
 
 # get the result of that execute. this will be the 2D array with every column except flag
@@ -49,7 +58,7 @@ print("Features selection success")
 # let's repeat but for a one dimensional array
 # we want the flag column (or label, we can easily switch it out)
 # create execute string
-execute = f"SELECT Flag FROM train_1 Limit 100000;"
+execute = f"SELECT Flag FROM train_1;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
@@ -78,7 +87,7 @@ connection.close()
 connection = sql.connect('/mnt/c/Users/mante/Downloads/test.db')
 cursor = connection.cursor()
 
-execute = f"SELECT {SQL_select} FROM test_1 Limit 100000;"
+execute = f"SELECT {SQL_select} FROM test_1;"
 cursor.execute(execute)
 
 result_features = cursor.fetchall()
@@ -86,7 +95,7 @@ result_features = cursor.fetchall()
 features_test = np.array(result_features, dtype='float32')
 
 
-execute = f"SELECT Flag FROM test_1 Limit 100000;"
+execute = f"SELECT Flag FROM test_1;"
 cursor.execute(execute)
 
 result_label = cursor.fetchall()
@@ -121,12 +130,33 @@ labels_test = labels_test.flatten()
 # selected_features_test = selector.transform(features_test)
 
 # ATTEMPT 2: Information Gain
-importances = mutual_info_classif(features_train, labels_train)
-feat_importances = pd.Series(importances, included_columns[0:len(included_columns)])
-feat_importances.plot(kind='barh', color='blue')
-plt.show()
+# importances = mutual_info_classif(features_train, labels_train)
+# feat_importances = pd.Series(importances, included_columns[0:len(included_columns)])
+# feat_importances.plot(kind='barh', color='blue')
+# plt.show()
 
-# uncomment 130 - end to train and predict
+# ATTEMPT 3: Exhaustive Feature Selection
+efs = EFS(SGDClassifier(shuffle = False, max_iter = 1000000), min_features = 1, max_features = 53, scoring = 'roc_auc', print_progress = True, cv = 2)
+efs.fit(features_train, labels_train.ravel())
+
+print('Best roc_auc: %.2f' % efs.best_score_)
+print('Best subset (indices):', efs.best_idx_)
+print('Best subset (corresponding names):', efs.best_feature_names_)
+print('Mask for features selected:', efs.best_mask_)
+print('Total number of features:', efs.n_features_in_)
+print('Total number of subsets:', efs.total_features_)
+print('Total number of features in subsets:', efs.subset_dim_)
+print('Total number of subsets that were checked:', efs.total_feature_names_)
+print('Total number of features that were checked:', efs.total_feature_names_)
+print('Total time taken to perform exhaustive search:', efs.total_time_)
+print('Total time taken to perform exhaustive search (formatted):', efs.total_time_formatted_)
+print('Total time taken to perform exhaustive search (seconds):', efs.total_time_secs_)
+print('Total time taken to perform exhaustive search (minutes):', efs.total_time_mins_)
+
+
+
+
+# # uncomment (now 160) - end to train and predict
 # # classifier object
 # clf = SGDClassifier(shuffle = False, max_iter = 1000000) # adjusting shuffle parameter
 
