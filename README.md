@@ -2,7 +2,7 @@
 ## Directory contents:
 * SGDtest.py to run machine learning on sample data (within repo)
 * SGDClassifier.py to run machine learning on full dataset (to be downloaded)
-* Test-files: Working directory (unimportant files)
+* Test-files: Working directory (unimportant files) **(not included in submission)**
 * Model-improvements: Directory for attempting to improve model accuracy
 ## Preliminary Setup
 1. Visit the link below to access the data we used.
