@@ -21,7 +21,7 @@
 
 **PART 2**
 _Assuming you have completed the above sets (i.e. correctly connecting to test.db and train.db)_
-1. Command: "git clon {insert-link-here}"
+1. Command: "git clone {insert-link-here}"
 2. Command: "pip install matplotlib" <br>
 3. With a python interpreter, type "python(3) SGDclassifier.py"
     a. Note: This will work by using the path to the files as described above. <br>
