@@ -14,10 +14,10 @@
 
 **PART 1**
 1. Command: "git clone {insert-link-here}"
-2. With a python interpreter, type "python(3) SGDTest.py" 
+2. With a python interpreter, type "python(3) SGDTest.py"
     a. Note: This will work by using the path to the files as described above.
     b. Note: this is a basic version, it only predicts based on a small sample. SGDTest is meant as a one-click "trial" run of our model (all that will be displayed is a Prediction Accuracy). See Part 2 for more involvement.
-3. Results will print!
+4. Results will print!
 
 **PART 2**
 _Assuming you have completed the above sets (i.e. correctly connecting to test.db and train.db)_
