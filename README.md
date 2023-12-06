@@ -27,5 +27,9 @@
     a. Note: This will only work by using the path to the files as described above. <br>
 3. Results will print. <br>
     a. Results include: Confusion Matrix, Classification Report, ROC curve (this will be saved in a file called "ROC_curve_comparison.png", and Prediction Accuracy.
+**Extra Code Artifacts**
+1. If you would like to test our partial fitting methods, change directories to model-improvements and run the command "python(3) SGDepochs.py" <br>
+a. Note: This resulted in lessened accuracy around 5% worse, hence why the full fit was used
+2. If you would like to view results for feature extraction, see the commented sections in SGDredux.py and execute that file similar to the above commands.
 
 
