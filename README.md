@@ -16,7 +16,7 @@
 ## How to test on your local computer:
 
 **PART 1**
-1. Command: "git clone {insert-link-here}"
+1. Command: "git clone https://github.com/tylermante10/NAIIDS.git"
 2. With a python interpreter, type "python(3) SGDTest.py" <br>
     a. Note: this is a basic version, it only predicts based on a small sample. SGDTest is meant as a one-click "trial" run of our model (all that will be displayed is a Prediction Accuracy). See Part 2 for more involvement.
 4. Results will print!
