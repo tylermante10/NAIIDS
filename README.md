@@ -8,8 +8,8 @@
 1. Visit the link below to access the data we used.
 * https://drive.google.com/drive/folders/1tukyzG5DkGZkwaXoiwhvTo0b01WOofoN?usp=drive_link
 * Download the files test.db and train.db 
-2. In **SGDClassifier.py** replace line **20** with this string: "connection = sql.connect(/path/to/downloaded/**train.db**)"
-   ### a. e.g. connection = sql.connect('/mnt/c/...')
+2. In **SGDClassifier.py** replace line **20** with this string: "connection = sql.connect(/path/to/downloaded/**train.db**)" <br>
+   a. e.g. connection = sql.connect('/mnt/c/...')
 3. In **SGDClassifier.py** replace line **71** with this string: "connection = sql.connect(/path/to/downloaded/**test.db**)"
 4. Have a linux environment with python installed
 
